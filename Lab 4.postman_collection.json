@@ -1,0 +1,259 @@
+{
+	"info": {
+		"_postman_id": "fb6e8fdb-5bdb-4d75-92cd-3b0fce139330",
+		"name": "Lab 4",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Get post by id",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"\r",
+							"\r",
+							"const schema = {\r",
+							"  \"$schema\": \"http://json-schema.org/draft-04/schema#\",\r",
+							"  \"type\": \"object\",\r",
+							"  \"properties\": {\r",
+							"    \"userId\": {\r",
+							"      \"type\": \"integer\"\r",
+							"    },\r",
+							"    \"id\": {\r",
+							"      \"type\": \"integer\"\r",
+							"    },\r",
+							"    \"title\": {\r",
+							"      \"type\": \"string\"\r",
+							"    },\r",
+							"    \"body\": {\r",
+							"      \"type\": \"string\"\r",
+							"    }\r",
+							"  },\r",
+							"  \"required\": [\r",
+							"    \"userId\",\r",
+							"    \"id\",\r",
+							"    \"title\",\r",
+							"    \"body\"\r",
+							"  ]\r",
+							"}\r",
+							"\r",
+							"pm.test(\"Successful GET request\", function () {\r",
+							"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type is present\", function () {\r",
+							"    pm.response.to.have.header(\"Content-Type\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type is correct\", function () {\r",
+							"    pm.expect(pm.response.headers.get(\"Content-Type\")).contains('application/json');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response schema is valid\", function () {\r",
+							"    const result = tv4.validateMultiple(pm.response.json(), schema, false, true);\r",
+							"    if (!result.valid) result.errors.forEach(err => console.log(\"Validation Error: \" + err.message));\r",
+							"    pm.expect(result.valid).to.be.true;\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/posts/1",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"posts",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create post",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Successful POST request\", function () {\r",
+							"    pm.expect(pm.response.code).to.be.oneOf([201, 202]);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type is present\", function () {\r",
+							"    pm.response.to.have.header(\"Content-Type\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type is correct\", function () {\r",
+							"    pm.expect(pm.response.headers.get(\"Content-Type\")).contains('application/json');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response contains id\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.id).to.be.a('number');\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const title = pm.variables.replaceIn(\"'{{$randomCatchPhrase}}'\");\r",
+							"const body = pm.variables.replaceIn(\"'{{$randomPhrase}}'\");\r",
+							"const userId = pm.variables.replaceIn(\"'{{$randomInt}}'\");\r",
+							"\r",
+							"pm.environment.set(\"title\", title);\r",
+							"pm.environment.set(\"body\", body);\r",
+							"pm.environment.set(\"userId\", userId);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  title: '{{title}}',\r\n  body: '{{body}}',\r\n  userId: '{{userId}}'\r\n}"
+				},
+				"url": {
+					"raw": "{{url}}/posts",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"posts"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update post",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"const title = pm.variables.replaceIn(\"'{{$randomCatchPhrase}}'\");\r",
+							"const body = pm.variables.replaceIn(\"'{{$randomPhrase}}'\");\r",
+							"const userId = pm.variables.replaceIn(\"'{{$randomInt}}'\");\r",
+							"\r",
+							"pm.environment.set(\"title\", title);\r",
+							"pm.environment.set(\"body\", body);\r",
+							"pm.environment.set(\"userId\", userId);"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Successful PUT request\", function () {\r",
+							"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type is present\", function () {\r",
+							"    pm.response.to.have.header(\"Content-Type\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type is correct\", function () {\r",
+							"    pm.expect(pm.response.headers.get(\"Content-Type\")).contains('application/json');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response contains id\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData.id).to.eq(1);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  id: 1,\r\n  title: '{{title}}',\r\n  body: '{{body}}',\r\n  userId: '{{userId}}'\r\n}"
+				},
+				"url": {
+					"raw": "{{url}}/posts/1",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"posts",
+						"1"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete post",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Successful PUT request\", function () {\r",
+							"    pm.expect(pm.response.code).to.be.oneOf([200]);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type is present\", function () {\r",
+							"    pm.response.to.have.header(\"Content-Type\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Content-Type is correct\", function () {\r",
+							"    pm.expect(pm.response.headers.get(\"Content-Type\")).contains('application/json');\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response is empty object\", function () {\r",
+							"    var jsonData = pm.response.json();\r",
+							"    pm.expect(jsonData).is.empty;\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{url}}/posts/1",
+					"host": [
+						"{{url}}"
+					],
+					"path": [
+						"posts",
+						"1"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
